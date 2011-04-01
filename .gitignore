@@ -4,3 +4,4 @@ classes
 lein-eclipse.jar
 lib
 pom.xml
+/lein-eclipse-1.1.0-SNAPSHOT.jar
