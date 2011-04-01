@@ -15,6 +15,10 @@
   [s to-trim]
   (re-sub (re-pattern (str "^" (Pattern/quote to-trim))) "" s))
 
+(defn- directory?
+  [arg]
+  (.isDirectory (File. arg)))
+
 (defn- print-classpath
   "Print .classpath to *out*."
   [project]
@@ -25,11 +29,15 @@
      [:classpath
       [:classpathentry
        {:kind "con" :path "org.eclipse.jdt.launching.JRE_CONTAINER"}]
+      (if (directory? (:java-source-path project))
+        [:classpathentry {:kind "src" :path (noroot (:java-source-path project))}])
       [:classpathentry
        {:kind "output" :path (noroot (:compile-path project))}]
-      (for [library (get-classpath project)]
+      (for [path (get-classpath project)]
         [:classpathentry
-         {:kind "lib" :path (noroot library)}])])))
+         (if (.isDirectory (File. (str path)))
+           {:kind "src" :path (noroot path)}
+           {:kind "lib" :path (noroot path)})])])))
 
 (defn- print-project
   "Print .project to *out*."
