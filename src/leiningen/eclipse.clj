@@ -23,8 +23,13 @@
   (.isDirectory (File. arg)))
 
 (defn- list-libraries
+  "Find all libraries in the project recursively, including lib and lib/dev"
   [project]
-  (map #(.getPath %) (.listFiles (File. (:library-path project)))))
+  (map 
+    #(.getPath %) 
+    (filter 
+      #(not (.isDirectory %)) 
+      (file-seq (java.io.File. (:library-path project))))))
 
 (defn- create-classpath
   "Print .classpath to *out*."
